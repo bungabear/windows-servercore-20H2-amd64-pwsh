@@ -13,7 +13,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v2
         with:
@@ -29,16 +29,16 @@ jobs:
           string: ${{ github.repository }} # need lowercase string
 
       - name: image name
-        run: echo "imagename=ghcr.io/${{ steps.repo_name_casing.outputs.lowercase }}" >> $GITHUB_ENV
+        run: echo "imagename=ghcr.io/${{ steps.repo_name_casing.outputs.lowercase }}" | Out-File -FilePath $env:GITHUB_ENV
 
       - name: build
-        run: docker build -t ${{ steps.repo_name_casing.outputs.lowercase }}:latest .
+        run: docker build -t ${{ env.imagename }}:latest .
 
       - name: tag
-        run: docker tag ${{ steps.repo_name_casing.outputs.lowercase }}:latest ${{ steps.repo_name_casing.outputs.lowercase }}:${{ env.count }}
+        run: docker tag ${{ env.imagename }}:latest ${{ env.imagename }}:${{ env.count }}
 
       - name: login
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
 
       - name: push
-        run: docker push ${{ steps.repo_name_casing.outputs.lowercase }}:${{ env.count }} && docker push ${{ steps.repo_name_casing.outputs.lowercase }}:latest
+        run: docker push ${{ env.imagename }}:${{ env.count }} && docker push ${{ env.imagename }}:latest
