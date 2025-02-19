@@ -20,7 +20,7 @@ jobs:
           fetch-depth: "0" # for version code
 
       - name: count
-        run: echo "count=$(git rev-list --all --count)" >> | Out-File -FilePath $env:GITHUB_ENV
+        run: echo "count=$(git rev-list --all --count)" | Out-File -FilePath $env:GITHUB_ENV
 
       - name: Obtain uppercased/lowercased pair of a repository name
         id: repo_name_casing
